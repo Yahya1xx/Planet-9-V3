@@ -1,3 +1,4 @@
+
 # Planet 9 Dynamical Exploration (v4.2)
 ### Research Grade Integration Pipeline — Ammonite (2023 KQ14) + Known ETNO Ensemble
 
@@ -31,11 +32,11 @@ Compared to v4.1, this release significantly optimizes integration efficiency an
 
 ---
 
-## REBOUND 5.0.0 API Implementation Reference
+<img width="1665" height="1826" alt="p9_polar" src="https://github.com/user-attachments/assets/88ffeef7-c9d7-46c8-8a2c-bee57281b697" />
+<img width="2380" height="1328" alt="p9_phase_space" src="https://github.com/user-attachments/assets/451e948f-17fc-4e34-b9f6-b6b72b544f54" />
+<img width="1880" height="2621" alt="p9_main" src="https://github.com/user-attachments/assets/4b349fcd-8f45-49b1-9db9-d3d055e7d605" />
+<img width="2118" height="1475" alt="p9_grid" src="https://github.com/user-attachments/assets/a947c1e1-0295-42ac-8ee8-74811d6585ae" />
+<img width="1050" height="1050" alt="p9_evolution" src="https://github.com/user-attachments/assets/7c4f3133-fc61-40af-8de1-4b7e50892f83" />
+<img width="1330" height="580" alt="p9_energy" src="https://github.com/user-attachments/assets/ac57019b-5a5d-4565-b886-ce93bde00332" />
+<img width="1273" height="880" alt="p9_secular_map" src="https://github.com/user-attachments/assets/2ee72ff2-14e0-4779-b1bd-e5d7063dbbb1" />
 
-The following core implementation patterns are verified against the active environment:
-
-### 1. Setup and Integrator Selection
-```python
-sim.integrator = "mercurius"
-sim.dt = 0.5  # Base timestep handles close approaches automatically
