@@ -1,63 +1,41 @@
-# Planet-9-V3
+# Planet 9 Dynamical Exploration (v4.2)
+### Research Grade Integration Pipeline — Ammonite (2023 KQ14) + Known ETNO Ensemble
 
-PLANET NINE DYNAMICAL EXPLORATION  —  v4.2  (Research Grade)
-  Ammonite (2023 KQ14) + Known ETNO Ensemble
+---
 
-  ─────────────────────────────────────────────────────────────────────
-  SCIENTIFIC MOTIVATION
-  ─────────────────────
-  Batygin & Brown (2016, 2019, 2021) propose a ~5–10 M_Earth planet at
-  ~400–800 AU to explain the observed clustering of extreme TNO orbital
-  poles and arguments of perihelion.  Ammonite (2023 KQ14, Wang et al.
-  2024, Nature Astronomy) is the largest known ETNO (H_V ~ 3.5, D ~ 600 km)
-  and adds a key data point.
+## Scientific Motivation
+This repository simulates the dynamical footprint of the hypothesized **Planet Nine**. Following the framework proposed by Batygin & Brown (2016, 2019, 2021), a $\sim$5–10 $M_{\oplus}$ planet situated between $\sim$400–800 AU is modeled to explain the observed clustering of extreme trans-Neptunian object (ETNO) orbital poles and arguments of perihelion. 
 
-  NEW IN v4.2 (vs v4.1)
-  ─────────────────────
-  1.  Switched integrator from WHFast to Mercurius.
-  2.  Removed manual adaptive timestepping; Mercurius natively handles
-      close encounters via IAS15 while maintaining a fixed base dt.
-  3.  Drastically improved performance by removing Python-level distance
-      checks and while loops.
+A primary focus of this version is **Ammonite (2023 KQ14)** (Wang et al. 2024, *Nature Astronomy*), which stands as the largest known ETNO ($H_V \sim 3.5$, $D \sim 600\text{ km}$), providing a vital new data point for testing these dynamical constraints.
 
-  ─────────────────────────────────────────────────────────────────────
-  INTEGRATOR DESIGN
-  ─────────────────
-  Giant-planet backbone
-  └── Mercurius integrator (Rein et al. 2019)
-      Fixed base dt = 0.5 yr  (≈ P_Jupiter / 24)
-      Mercurius smoothly switches to IAS15 for close encounters,
-      preserving excellent energy conservation without manual sub-stepping.
+---
 
-  High-eccentricity test particles  (Sedna e=0.84, Goblin e=0.94)
-  └── IAS15 step-size control takes over automatically during perihelion,
-      maintaining high accuracy even during planetary close approaches.
+## What's New in v4.2
+Compared to v4.1, this release significantly optimizes integration efficiency and stability:
+* **Integrator Upgrade:** Switched the baseline solver from `WHFast` to `Mercurius`.
+* **Native Adaptive Timestepping:** Removed inefficient manual Python-level distance checks and loops. `Mercurius` now natively handles close encounters using the `IAS15` solver while maintaining a fixed base time step.
+* **Performance Boost:** Drastically reduced execution overhead by delegating close-approach handling directly to the underlying C-engine.
 
-  ─────────────────────────────────────────────────────────────────────
-  REBOUND 5.0.0 API  (verified against installed package)
-  ─────────────────────────────────────────────────────────────────────
-  1.  sim.integrator = "mercurius"
-      sim.dt = 0.5
-      (Handles close approaches automatically)
+---
 
-  2.  Particle naming:
-        sim.particles[-1].name = "label"
-        sim.particles["label"]  ← lookup by name
+## Integrator Architecture
 
-  3.  Orbit:
-        p.orbit(primary=sim.particles["sun"])
+### Giant-Planet Backbone
+* **Engine:** `Mercurius` integrator (Rein et al. 2019)
+* **Base Timestep ($dt$):** $0.5\text{ yr}$ ($\approx P_{\text{Jupiter}} / 24$)
+* **Behavior:** Seamlessly transitions to `IAS15` during close planetary encounters, ensuring optimal energy conservation without manual sub-stepping.
 
-  4.  Remove:
-        sim.remove(idx)   where idx = sim.particles["name"].index
+### High-Eccentricity Test Particles
+* **Targets:** Highly eccentric ETNOs such as Sedna ($e = 0.84$) and Goblin ($e = 0.94$).
+* **Behavior:** `IAS15` step-size control automatically takes over during perihelion passages to preserve high tracking precision during deep gravitational plunges.
 
-  5.  SimulationArchive:
-        sim.save_to_file(path, interval=dt_yr, delete_file=True)
-        sa = rebound.Simulationarchive(path)
+---
 
-  6.  integrate:
-        sim.integrate(t, exact_finish_time=1)
+## REBOUND 5.0.0 API Implementation Reference
 
-  7.  Pickling:  sim.copy() and pickle.dumps/loads both work correctly.
+The following core implementation patterns are verified against the active environment:
 
-  8.  OpenMP:  NOT compiled into the pip wheel.
-      Use concurrent.futures.ProcessPoolExecutor for parallelism.
+### 1. Setup and Integrator Selection
+```python
+sim.integrator = "mercurius"
+sim.dt = 0.5  # Base timestep handles close approaches automatically
